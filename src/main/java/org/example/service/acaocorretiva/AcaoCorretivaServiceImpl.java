@@ -1,11 +1,13 @@
 package org.example.service.acaocorretiva;
 
 import org.example.model.AcaoCorretiva;
+import org.example.model.Falha;
 import org.example.repository.acaocorretiva.AcaoCorretivaRepository;
 import org.example.repository.equipamento.EquipamentoRepository;
 import org.example.repository.falha.FalhaRepository;
 
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class AcaoCorretivaServiceImpl implements AcaoCorretivaService{
 
@@ -16,14 +18,20 @@ public class AcaoCorretivaServiceImpl implements AcaoCorretivaService{
     @Override
     public AcaoCorretiva registrarConclusaoDeAcao(AcaoCorretiva acao) throws SQLException {
 
-        if(!falhaRepository.falhaExiste(acao.getFalhaId())){
-            throw new RuntimeException();
+        Falha falhaEncontrada = falhaRepository.readFalhas(acao.getFalhaId());
+
+        if(falhaEncontrada == null){
+            throw new RuntimeException("Falha não encontrada!");
         }
 
         acao = repository.save(acao);
 
-        falhaRepository.updateStatus(acao.getFalhaId(), "RESOLVIDA");
+        falhaRepository.updateStatus(falhaEncontrada.getId(), "RESOLVIDA");
 
-        return null;
+        if(Objects.equals(falhaEncontrada.getCriticidade(), "CRITICA")){
+            equipamentoRepository.updateStatus(falhaEncontrada.getEquipamentoId(), "OPERACIONAL");
+        }
+
+        return acao;
     }
 }

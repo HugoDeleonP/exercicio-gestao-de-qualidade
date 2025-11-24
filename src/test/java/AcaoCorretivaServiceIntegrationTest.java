@@ -73,19 +73,29 @@ public class AcaoCorretivaServiceIntegrationTest {
             );
             """;
 
-    private static final String SQL_DROP =
+    private static final String SQL_DROP_ACAO =
             """
             DROP TABLE IF EXISTS AcaoCorretiva;
+            """;
+
+    private static final String SQL_DROP_FALHA =
+            """
             DROP TABLE IF EXISTS Falha;
+            """;
+
+    private static final String SQL_DROP_EQUIPAMENTO =
+            """
             DROP TABLE IF EXISTS Equipamento;
             """;
 
-    private static final String SQL_TRUNCATE =
+    private static final String SQL_DELETE_ACAO =
             """
-            TRUNCATE TABLE AcaoCorretiva;
-            TRUNCATE TABLE Falha;
-            TRUNCATE TABLE Equipamento;
+            DELETE FROM AcaoCorretiva;
             """;
+
+    private static final String SQL_DELETE_FALHA = "DELETE FROM Falha;";
+
+    private static final String SQL_DELETE_EQUIPAMENTO = "DELETE FROM Equipamento";
 
 
     // ---------------------------
@@ -96,7 +106,9 @@ public class AcaoCorretivaServiceIntegrationTest {
         try (Connection conn = Conexao.conectar();
              Statement stmt = conn.createStatement()) {
 
-            stmt.execute(SQL_DROP);
+            stmt.execute(SQL_DROP_ACAO);
+            stmt.execute(SQL_DROP_FALHA);
+            stmt.execute(SQL_DROP_EQUIPAMENTO);
             stmt.execute(SQL_CREATE_EQUIP);
             stmt.execute(SQL_CREATE_FALHA);
             stmt.execute(SQL_CREATE_ACAO);
@@ -108,7 +120,9 @@ public class AcaoCorretivaServiceIntegrationTest {
         try (Connection conn = Conexao.conectar();
              Statement stmt = conn.createStatement()) {
 
-            stmt.execute(SQL_DROP);
+            stmt.execute(SQL_DROP_ACAO);
+            stmt.execute(SQL_DROP_FALHA);
+            stmt.execute(SQL_DROP_EQUIPAMENTO);
         }
     }
 
@@ -117,7 +131,9 @@ public class AcaoCorretivaServiceIntegrationTest {
         try (Connection conn = Conexao.conectar();
              Statement stmt = conn.createStatement()) {
 
-            stmt.execute(SQL_TRUNCATE);
+            stmt.execute(SQL_DELETE_ACAO);
+            stmt.execute(SQL_DELETE_FALHA);
+            stmt.execute(SQL_DELETE_EQUIPAMENTO);
         }
 
         acaoService = new AcaoCorretivaServiceImpl();

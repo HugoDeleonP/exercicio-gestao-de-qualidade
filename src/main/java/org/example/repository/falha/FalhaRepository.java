@@ -77,9 +77,11 @@ public class FalhaRepository {
         return falhas;
     }
 
-    public boolean falhaExiste(Long id) throws SQLException{
+    public Falha readFalhas(long id) throws SQLException{
         String sql = """
-                SELECT COUNT(0) from Falha
+                SELECT id, equipamentoId, dataHoraOcorrencia, descricao,
+                criticidade, status, tempoParadaHoras
+                FROM Falha
                 WHERE id = ?
                 """;
 
@@ -90,19 +92,27 @@ public class FalhaRepository {
             ResultSet rs = stmt.executeQuery();
 
             if(rs.next()){
-                return rs.getLong(1) > 0;
-            }
 
+                id = rs.getLong("id");
+                Long equipamentoId = rs.getLong("equipamentoId");
+                LocalDateTime dataHoraOcorrencia = rs.getObject("dataHoraOcorrencia", LocalDateTime.class);
+                String descricao = rs.getString("descricao");
+                String criticidade = rs.getString("criticidade");
+                String status = rs.getString("status");
+                BigDecimal tempoParadaHoras = rs.getBigDecimal("tempoParadaHoras");
+
+                return new Falha(id, equipamentoId, dataHoraOcorrencia, descricao, criticidade, status, tempoParadaHoras);
+            }
         }
 
-        return false;
+        return null;
     }
 
     public void updateStatus(Long id, String status) throws SQLException {
 
         String sql = """
                 UPDATE Falha
-                SET statusOperacional = ?
+                SET status = ?
                 WHERE id = ?
                 """;
 
