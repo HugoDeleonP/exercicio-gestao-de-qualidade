@@ -9,7 +9,7 @@ public class TestUtils {
              Statement stmt = conn.createStatement()) {
 
             stmt.execute("""
-                INSERT INTO Equipamento (nome, status)
+                INSERT INTO Equipamento (nome, statusOperacional)
                 VALUES ('Motor Principal', 'OPERACIONAL'),
                        ('Esteira 01', 'OPERACIONAL'),
                        ('Caldeira', 'OPERACIONAL');
